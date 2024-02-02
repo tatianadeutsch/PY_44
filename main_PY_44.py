@@ -65,25 +65,24 @@ upd5.КодПоставщика = 6
 upd6.КодПоставщика = 5
 upd7.КодПоставщика = 1
 
-session.add_all([upd1, upd2, upd3, upd4])
+session.add_all([upd1, upd2, upd3, upd4, upd5, upd6, upd7])
 session.commit()
 
 employee_query = session.query(Employees)
 clean_py_query = employee_query.filter(Employees.КодСотрудника == 7)
-clean_py_query.update({Employees.Адрес: 'Санкт-Петербург, ул. Пятилеток, д. 15'})
+clean_py_query.update({Employees.Адрес: 'Санкт-Петербург, пр. Пятилеток, д. 15'})
 
 session.add(employee_query)
 session.commit()
 
-order_query = session.query(Orders)
-find_query1 = order_query.filter(Orders.КодЗаказа == 1)
-find_query2 = order_query.filter(Orders.КодЗаказа == 2)
-find_query3 = order_query.filter(Orders.КодЗаказа == 3)
-find_query4 = order_query.filter(Orders.КодЗаказа == 4)
-find_query5 = order_query.filter(Orders.КодЗаказа == 5)
-find_query6 = order_query.filter(Orders.КодЗаказа == 6)
-find_query7 = order_query.filter(Orders.КодЗаказа == 7)
-find_query8 = order_query.filter(Orders.КодЗаказа == 8)
+find_query1 = session.query(Orders).filter(Orders.КодЗаказа == 1)
+find_query2 = session.query(Orders).filter(Orders.КодЗаказа == 2)
+find_query3 = session.query(Orders).filter(Orders.КодЗаказа == 3)
+find_query4 = session.query(Orders).filter(Orders.КодЗаказа == 4)
+find_query5 = session.query(Orders).filter(Orders.КодЗаказа == 5)
+find_query6 = session.query(Orders).filter(Orders.КодЗаказа == 6)
+find_query7 = session.query(Orders).filter(Orders.КодЗаказа == 7)
+find_query8 = session.query(Orders).filter(Orders.КодЗаказа == 8)
 
 find_query1.update({Orders.КодСотрудника: 4})
 find_query3.update({Orders.КодСотрудника: 4})
@@ -94,9 +93,7 @@ find_query4.update({Orders.КодСотрудника: 2})
 find_query6.update({Orders.КодСотрудника: 2})
 find_query7.update({Orders.КодСотрудника: 2})
 
-session.add_all(order_query)
+session.add_all([find_query1, find_query2, find_query3, find_query4,
+                 find_query5, find_query6, find_query7])
 session.commit()
-
-
-
 
