@@ -93,7 +93,13 @@ find_query4.update({Orders.КодСотрудника: 2})
 find_query6.update({Orders.КодСотрудника: 2})
 find_query7.update({Orders.КодСотрудника: 2})
 
-session.add_all([find_query1, find_query2, find_query3, find_query4,
-                 find_query5, find_query6, find_query7])
+session.add_all(find_query1)
+session.add_all(find_query2)
+session.add_all(find_query3)
+session.add_all(find_query4)
+session.add_all(find_query5)
+session.add_all(find_query6)
+session.add_all(find_query7)
+session.add_all(find_query8)
 session.commit()
 
