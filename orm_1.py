@@ -1,5 +1,8 @@
+from sqlalchemy import select, cast, Integer, func, and_
+from sqlalchemy.orm import aliased
+
 from database import Base, session_, engine
-from models import Client, Employees, Products, Orders, Provider, Procurement
+from models import Clients, Employees, Products, Orders, Provider, Procurement
 
 
 def create_table():
@@ -9,378 +12,458 @@ def create_table():
 
 def insert_table():
     with session_() as session:
-        client_1 = Client(
-            ФИО='Русакова Василиса Евгеньевна',
-            Телефон='+79119119111'
+        client_1 = Clients(
+            name_client="Русакова Василиса Евгеньевна", tel_client="+79119119111"
         )
 
-        client_2 = Client(
-            ФИО='Киренков Александр Алексеевич',
-            Телефон='+79119119112'
+        client_2 = Clients(
+            name_client="Киренков Александр Алексеевич", tel_client="+79119119112"
         )
 
-        client_3 = Client(
-            ФИО='Владимиров Роман Петрович',
-            Телефон='+79119119113'
+        client_3 = Clients(
+            name_client="Владимиров Роман Петрович", tel_client="+79119119113"
         )
 
-        client_4 = Client(
-            ФИО='Родионов Михаил Александрович',
-            Телефон='+79119119114'
+        client_4 = Clients(
+            name_client="Родионов Михаил Александрович", tel_client="+79119119114"
         )
 
-        client_5 = Client(
-            ФИО='Баранов Тимур Михайлович',
-            Телефон='+79119119115'
+        client_5 = Clients(
+            name_client="Баранов Тимур Михайлович", tel_client="+79119119115"
         )
 
-        client_6 = Client(
-            ФИО='Сурмина Валерия Валериевна',
-            Телефон='+79119119116'
+        client_6 = Clients(
+            name_client="Сурмина Валерия Валериевна", tel_client="+79119119116"
         )
 
-        client_7 = Client(
-            ФИО='Акимова Ольга Александровна',
-            Телефон='+79119119117'
+        client_7 = Clients(
+            name_client="Акимова Ольга Александровна", tel_client="+79119119117"
         )
 
-        client_8 = Client(
-            ФИО='Киреев Максим Леонидович',
-            Телефон='+79119119118'
+        client_8 = Clients(
+            name_client="Киреев Максим Леонидович", tel_client="+79119119118"
         )
 
-        client_9 = Client(
-            ФИО='Архипова Варвара Дмитриевна',
-            Телефон='+79119119119'
+        client_9 = Clients(
+            name_client="Архипова Варвара Дмитриевна", tel_client="+79119119119"
         )
 
-        client_10 = Client(
-            ФИО='Караваева Анна Васильевна',
-            Телефон='+79119119120'
+        client_10 = Clients(
+            name_client="Караваева Анна Васильевна", tel_client="+79119119120"
         )
-        session.add_all([client_1, client_2, client_3, client_4, client_5, client_6,
-                         client_7, client_8, client_9, client_10])
-
+        session.add_all(
+            [
+                client_1,
+                client_2,
+                client_3,
+                client_4,
+                client_5,
+                client_6,
+                client_7,
+                client_8,
+                client_9,
+                client_10,
+            ]
+        )
 
         employee_1 = Employees(
-            Фамилия='Гирькин',
-            Имя='Василий',
-            Отчество='Васильевич',
-            Должность='Директор',
-            ДомашнийТелефон='+79119129121',
-            ДатаРождения='1968-01-12'
+            surname_employee="Гирькин",
+            last_employee="Василий",
+            patr_employee="Васильевич",
+            post_employee="Директор",
+            privat_tel="+79119129121",
+            birthdate="1968-01-12",
         )
 
         employee_2 = Employees(
-            Фамилия='Штангин',
-            Имя='Никонор',
-            Отчество='Никонорович',
-            Должность='Заместитель директора',
-            ДомашнийТелефон='+79119129122',
-            ДатаРождения='1970-01-02'
+            surname_employee="Штангин",
+            last_employee="Никонор",
+            patr_employee="Никонорович",
+            post_employee="Заместитель директора",
+            privat_tel="+79119129122",
+            birthdate="1970-01-02",
         )
 
         employee_3 = Employees(
-            Фамилия='Быстрова',
-            Имя='Евгения',
-            Отчество='Евгениевна',
-            Должность='Бухгалтер',
-            ДомашнийТелефон='+79119129123',
-            ДатаРождения='1988-04-12'
+            surname_employee="Быстрова",
+            last_employee="Евгения",
+            patr_employee="Евгениевна",
+            post_employee="Бухгалтер",
+            privat_tel="+79119129123",
+            birthdate="1988-04-12",
         )
 
         employee_4 = Employees(
-            Фамилия='Каштанова',
-            Имя='Евдокия',
-            Отчество='Герасимовна',
-            Должность='Товаровед',
-            ДомашнийТелефон='+79119129124',
-            ДатаРождения='1983-01-31'
+            surname_employee="Каштанова",
+            last_employee="Евдокия",
+            patr_employee="Герасимовна",
+            post_employee="Товаровед",
+            privat_tel="+79119129124",
+            birthdate="1983-01-31",
         )
 
         employee_5 = Employees(
-            Фамилия='Трухачева',
-            Имя='Наталья',
-            Отчество='Васильевна',
-            Должность='Кассир',
-            ДомашнийТелефон='+79119129125',
-            ДатаРождения='1998-02-11'
+            surname_employee="Трухачева",
+            last_employee="Наталья",
+            patr_employee="Васильевна",
+            post_employee="Кассир",
+            privat_tel="+79119129125",
+            birthdate="1998-02-11",
         )
 
         employee_6 = Employees(
-            Фамилия='Барсукова',
-            Имя='Гликерия',
-            Отчество='Борисовна',
-            Должность='Кассир',
-            ДомашнийТелефон='+79119129126',
-            ДатаРождения='1990-03-05'
+            surname_employee="Барсукова",
+            last_employee="Гликерия",
+            patr_employee="Борисовна",
+            post_employee="Кассир",
+            privat_tel="+79119129126",
+            birthdate="1990-03-05",
         )
 
         employee_7 = Employees(
-            Фамилия='Хомяков',
-            Имя='Спартак',
-            Отчество='Аристархович',
-            Должность='Грузчик',
-            ДомашнийТелефон='+79119129127',
-            ДатаРождения='1999-10-10'
+            surname_employee="Хомяков",
+            last_employee="Спартак",
+            patr_employee="Аристархович",
+            post_employee="Грузчик",
+            privat_tel="+79119129127",
+            birthdate="1999-10-10",
         )
 
-        session.add_all([employee_1, employee_2, employee_3, employee_4,
-                         employee_5, employee_6, employee_7])
-
+        session.add_all(
+            [
+                employee_1,
+                employee_2,
+                employee_3,
+                employee_4,
+                employee_5,
+                employee_6,
+                employee_7,
+            ]
+        )
 
         provider1 = Provider(
-            НазваниеПоставщика='Зимнее утро',
-            ПредставительПоставщика='Утренний Владлен Владленович',
-            Обращаться='Рукавичкина',
-            КонтактныйТелефон='+79119009090',
-            Адрес='Санкт-Петербург'
+            name_provider="Зимнее утро",
+            agent_provider="Утренний Владлен Владленович",
+            contact_person="Рукавичкина",
+            tel_prov="+79119009090",
+            address_prov="Санкт-Петербург",
         )
 
         provider2 = Provider(
-            НазваниеПоставщика='Зимние сумерки',
-            ПредставительПоставщика='Сумеречников Павел Павлович',
-            Обращаться='Косичкина',
-            КонтактныйТелефон='+79119009091',
-            Адрес='Санкт-Петербург'
+            name_provider="Зимние сумерки",
+            agent_provider="Сумеречников Павел Павлович",
+            contact_person="Косичкина",
+            tel_prov="+79119009091",
+            address_prov="Санкт-Петербург",
         )
 
         provider3 = Provider(
-            НазваниеПоставщика='Зимний полдень',
-            ПредставительПоставщика='Полдничий Иван Иванович',
-            Обращаться='Кляксова',
-            КонтактныйТелефон='+79119009092',
-            Адрес='Санкт-Петербург'
+            name_provider="Зимний полдень",
+            agent_provider="Полдничий Иван Иванович",
+            contact_person="Кляксова",
+            tel_prov="+79119009092",
+            address_prov="Санкт-Петербург",
         )
 
         provider4 = Provider(
-            НазваниеПоставщика='Зимняя слякоть',
-            ПредставительПоставщика='Слякотный Тимур Тимурович',
-            Обращаться='Пироженкова',
-            КонтактныйТелефон='+79119009093',
-            Адрес='Москва'
+            name_provider="Зимняя слякоть",
+            agent_provider="Слякотный Тимур Тимурович",
+            contact_person="Пироженкова",
+            tel_prov="+79119009093",
+            address_prov="Москва",
         )
 
         provider5 = Provider(
-            НазваниеПоставщика='Зимние забавы',
-            ПредставительПоставщика='Забавин Петр Петрович',
-            Обращаться='Пуговкина',
-            КонтактныйТелефон='+79119009094',
-            Адрес='Москва'
+            name_provider="Зимние забавы",
+            agent_provider="Забавин Петр Петрович",
+            contact_person="Пуговкина",
+            tel_prov="+79119009094",
+            address_prov="Москва",
         )
 
         provider6 = Provider(
-            НазваниеПоставщика='Зимние каникулы',
-            ПредставительПоставщика='Отдыхай Игорь Игоревич',
-            Обращаться='Березкина',
-            КонтактныйТелефон='+79119009095',
-            Адрес='Санкт-Петербург'
+            name_provider="Зимние каникулы",
+            agent_provider="Отдыхай Игорь Игоревич",
+            contact_person="Березкина",
+            tel_prov="+79119009095",
+            address_prov="Санкт-Петербург",
         )
 
         provider7 = Provider(
-            НазваниеПоставщика='Зимние дороги',
-            ПредставительПоставщика='Незевай Сергей Сергеевич',
-            Обращаться='Шнурков',
-            КонтактныйТелефон='+79119009096',
-            Адрес='Санкт-Петербург'
+            name_provider="Зимние дороги",
+            agent_provider="Незевай Сергей Сергеевич",
+            contact_person="Шнурков",
+            tel_prov="+79119009096",
+            address_prov="Санкт-Петербург",
         )
 
-        session.add_all([provider1, provider2, provider3, provider4, provider5,
-                         provider6, provider7])
-
-
-        procurement1 = Procurement(
-            ДатаПоставки='2023-12-20',
-            Поставщик_=provider7
+        session.add_all(
+            [
+                provider1,
+                provider2,
+                provider3,
+                provider4,
+                provider5,
+                provider6,
+                provider7,
+            ]
         )
 
-        procurement2 = Procurement(
-            ДатаПоставки='2023-12-21',
-            Поставщик_=provider6
+        procurement1 = Procurement(date_procur="2023-12-20", provider_=provider7)
+
+        procurement2 = Procurement(date_procur="2023-12-21", provider_=provider6)
+
+        procurement3 = Procurement(date_procur="2023-12-22", provider_=provider5)
+
+        procurement4 = Procurement(date_procur="2023-12-23", provider_=provider4)
+
+        procurement5 = Procurement(date_procur="2023-12-24", provider_=provider3)
+
+        procurement6 = Procurement(date_procur="2023-12-25", provider_=provider2)
+
+        procurement7 = Procurement(date_procur="2023-12-26", provider_=provider1)
+
+        session.add_all(
+            [
+                procurement1,
+                procurement2,
+                procurement3,
+                procurement4,
+                procurement5,
+                procurement6,
+                procurement7,
+            ]
         )
-
-        procurement3 = Procurement(
-            ДатаПоставки='2023-12-22',
-            Поставщик_=provider5
-        )
-
-        procurement4 = Procurement(
-            ДатаПоставки='2023-12-23',
-            Поставщик_=provider4
-        )
-
-        procurement5 = Procurement(
-            ДатаПоставки='2023-12-24',
-            Поставщик_=provider3
-        )
-
-        procurement6 = Procurement(
-            ДатаПоставки='2023-12-25',
-            Поставщик_=provider2
-        )
-
-        procurement7 = Procurement(
-            ДатаПоставки='2023-12-26',
-            Поставщик_=provider1
-        )
-
-        session.add_all([procurement1, procurement2, procurement3, procurement4,
-                         procurement5, procurement6, procurement7])
-
 
         product1 = Products(
-            НаименованиеТовара='Стиральный порошок "Не линяй"',
-            ТехническиеХарактеристики='Упаковка 10 кг',
-            Описание='Порошок белого цвета, гиппоаллергенный',
-            Изображение='https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg',
-            СтоимостьЗакупки=600,
-            Наличие='в наличии',
-            Количество=20,
-            СтоимостьПродажи=700,
-            Поставка_=procurement1
+            name_product='Стиральный порошок "Не линяй"',
+            specifications="Упаковка 10 кг",
+            description="Порошок белого цвета, гиппоаллергенный",
+            picture="https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg",
+            price_purchase=600,
+            availability="в наличии",
+            quantity=20,
+            price_sale=700,
+            procurements_=procurement1,
         )
 
         product2 = Products(
-            НаименованиеТовара='Мыло "Не облезай"',
-            ТехническиеХарактеристики='200 гр.',
-            Описание='Кусковое мыло белого цвета, без запаха',
-            Изображение='https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg',
-            СтоимостьЗакупки=40,
-            Наличие='в наличии',
-            Количество=200,
-            СтоимостьПродажи=48,
-            Поставка_=procurement2
+            name_product='Мыло "Не облезай"',
+            specifications="200 гр.",
+            description="Кусковое мыло белого цвета, без запаха",
+            picture="https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg",
+            price_purchase=40,
+            availability="в наличии",
+            quantity=200,
+            price_sale=48,
+            procurements_=procurement2,
         )
 
         product3 = Products(
-            НаименованиеТовара='Шампунь "Рискни не облысеть"',
-            ТехническиеХарактеристики='300 мл',
-            Описание='Прозрачный, с запахом мха',
-            Изображение='https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg',
-            СтоимостьЗакупки=400,
-            Наличие='в наличии',
-            Количество=15,
-            СтоимостьПродажи=500,
-            Поставка_=procurement4
+            name_product='Шампунь "Рискни не облысеть"',
+            specifications="300 мл",
+            description="Прозрачный, с запахом мха",
+            picture="https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg",
+            price_purchase=400,
+            availability="в наличии",
+            quantity=15,
+            price_sale=500,
+            procurements_=procurement4,
         )
 
         product4 = Products(
-            НаименованиеТовара='Средство для мытья посуды "Купи посудомойку"',
-            ТехническиеХарактеристики='400 мл',
-            Описание='Прозрачного цвета, с запахом лимона',
-            Изображение='https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg',
-            СтоимостьЗакупки=80,
-            Наличие='в наличии',
-            Количество=45,
-            СтоимостьПродажи=90,
-            Поставка_=procurement5
+            name_product='Средство для мытья посуды "Купи посудомойку"',
+            specifications="400 мл",
+            description="Прозрачного цвета, с запахом лимона",
+            picture="https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg",
+            price_purchase=80,
+            availability="в наличии",
+            quantity=45,
+            price_sale=90,
+            procurements_=procurement5,
         )
 
         product5 = Products(
-            НаименованиеТовара='Коврик для ванной "Не растянись"',
-            ТехническиеХарактеристики='1 х 1 м',
-            Описание='Коврик нескользящий',
-            Изображение='https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg',
-            СтоимостьЗакупки=350,
-            Наличие='в наличии',
-            Количество=10,
-            СтоимостьПродажи=450,
-            Поставка_=procurement7
+            name_product='Коврик для ванной "Не растянись"',
+            specifications="1 х 1 м",
+            description="Коврик нескользящий",
+            picture="https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg",
+            price_purchase=350,
+            availability="в наличии",
+            quantity=10,
+            price_sale=450,
+            procurements_=procurement7,
         )
 
         product6 = Products(
-            НаименованиеТовара='Кондиционер для белья "Без фанатизма"',
-            ТехническиеХарактеристики='500 мл',
-            Описание='Средство белого цвета. Не вызывает аллергии',
-            Изображение='https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg',
-            СтоимостьЗакупки=110,
-            Наличие='в наличии',
-            Количество=20,
-            СтоимостьПродажи=150,
-            Поставка_=procurement6
+            name_product='Кондиционер для белья "Без фанатизма"',
+            specifications="500 мл",
+            description="Средство белого цвета. Не вызывает аллергии",
+            picture="https://opttorg-horeca.ru/assets/images/catalog/hoz-tovar/stiralnyj-poroshok-dosya-8-5kg.jpg",
+            price_purchase=110,
+            availability="в наличии",
+            quantity=20,
+            price_sale=150,
+            procurements_=procurement6,
         )
 
         session.add_all([product1, product2, product3, product4, product5, product6])
 
-
         order1 = Orders(
-            ДатаРазмещения='2024-01-09',
-            ДатаИсполнения='2024-02-09',
-            Сотрудник_=employee_4,
-            Товары_=product1,
-            Клиент_=client_10
+            date_placement="2024-01-09",
+            date_ex="2024-02-09",
+            employee_=employee_4,
+            products_=product1,
+            clients_=client_10,
         )
 
         order2 = Orders(
-            ДатаРазмещения='2024-01-10',
-            ДатаИсполнения='2024-02-10',
-            Сотрудник_=employee_4,
-            Товары_=product6,
-            Клиент_=client_9
+            date_placement="2024-01-10",
+            date_ex="2024-02-10",
+            employee_=employee_4,
+            products_=product6,
+            clients_=client_9,
         )
 
         order3 = Orders(
-            ДатаРазмещения='2024-01-11',
-            ДатаИсполнения='2024-02-11',
-            Сотрудник_=employee_4,
-            Товары_=product5,
-            Клиент_=client_8
+            date_placement="2024-01-11",
+            date_ex="2024-02-11",
+            employee_=employee_4,
+            products_=product5,
+            clients_=client_8,
         )
 
         order4 = Orders(
-            ДатаРазмещения='2024-01-12',
-            ДатаИсполнения='2024-02-12',
-            Сотрудник_=employee_2,
-            Товары_=product4,
-            Клиент_=client_7
+            date_placement="2024-01-12",
+            date_ex="2024-02-12",
+            employee_=employee_2,
+            products_=product4,
+            clients_=client_7,
         )
 
         order5 = Orders(
-            ДатаРазмещения='2024-01-13',
-            ДатаИсполнения='2024-02-13',
-            Сотрудник_=employee_4,
-            Товары_=product3,
-            Клиент_=client_6
+            date_placement="2024-01-13",
+            date_ex="2024-02-13",
+            employee_=employee_4,
+            products_=product3,
+            clients_=client_6,
         )
 
         order6 = Orders(
-            ДатаРазмещения='2024-01-14',
-            ДатаИсполнения='2024-02-14',
-            Сотрудник_=employee_2,
-            Товары_=product2,
-            Клиент_=client_5
+            date_placement="2024-01-14",
+            date_ex="2024-02-14",
+            employee_=employee_2,
+            products_=product2,
+            clients_=client_5,
         )
 
         order7 = Orders(
-            ДатаРазмещения='2024-01-15',
-            ДатаИсполнения='2024-02-15',
-            Сотрудник_=employee_2,
-            Товары_=product6,
-            Клиент_=client_4
+            date_placement="2024-01-15",
+            date_ex="2024-02-15",
+            employee_=employee_2,
+            products_=product6,
+            clients_=client_4,
         )
 
         order8 = Orders(
-            ДатаРазмещения='2024-01-16',
-            ДатаИсполнения='2024-02-16',
-            Сотрудник_=employee_4,
-            Товары_=product6,
-            Клиент_=client_1
+            date_placement="2024-01-16",
+            date_ex="2024-02-16",
+            employee_=employee_4,
+            products_=product6,
+            clients_=client_1,
         )
 
-        session.add_all([order1, order2, order3, order4, order5, order6,
-                         order7, order8])
+        session.add_all(
+            [order1, order2, order3, order4, order5, order6, order7, order8]
+        )
         session.commit()
 
 
+def select_table():
+    with session_() as session:
+        id_provider = 1
+        # # Получаем ОДНОГО поставщика
+        provider1 = session.get(Provider, id_provider)
+        # Получаем всех поставщиков
+        query = select(Provider)  # SELECT * FROM Provider
+        result = session.execute(query)
+        providers = result.all()
+        print(f"{providers=}")
 
 
+def update_table(
+    client_id: int = 1, new_adress: str = "Санкт-Петербург, ул. Елизарова, д.15"
+):
+    with session_() as session:
+        client_1 = session.get(Clients, client_id)
+        client_1.address_client = new_adress
+        # Сбросить все изменения
+        # session.expire_all()
+        # Обновить данные (Забирает последнее обновление из базы данных)
+        # session.refresh(client_1)
+        session.commit()
 
 
+def update_table_1():
+    with session_() as session:
+        client_2 = session.get(Clients, 2)
+        client_2.address_client = "г. Санкт-Петербург, ул. Крупской, д. 2"
+
+        client_3 = session.get(Clients, 3)
+        client_3.address_client = "г. Санкт-Петербург, проспект Обуховской Обороны, 82"
+
+        client_4 = session.get(Clients, 4)
+        client_4.address_client = "г. Санкт-Петербург, ул. Седова, д. 13"
+
+        clients_new = session.query(Clients).filter(Clients.address_client == None)
+        clients_new.update({Clients.address_client: "Санкт-Петербург"})
+
+        session.commit()
 
 
+def select_from_products(like_productname: str = "бел"):
+    with session_() as session:
+        query = (
+            select(
+                Products.name_product,
+                cast(func.avg(Products.price_purchase), Integer).label("avg_price"),
+            )
+            .select_from(Products)
+            .filter(
+                and_(
+                    Products.quantity > 3,
+                    Products.description.contains(like_productname),
+                )
+            )
+            .group_by(Products.name_product)
+            .having(cast(func.avg(Products.price_purchase), Integer) > 100)
+        )
+        print(query.compile(compile_kwargs={"literal_binds": True}))
+        res = session.execute(query)
+        result = res.all()
+        print(result[0].avg_price)
 
 
+def select_from_products_1():
+    with session_() as session:
+        query = (
+            select(Products.name_product, Products.price_purchase, Products.price_sale)
+            .select_from(Products)
+            .filter(Products.price_sale > 100)
+            .order_by(Products.price_sale)
+        )
+        result = session.execute(query)
+        print(result.all())
 
 
+def select_with_join():
+    """Объединение таблиц"""
+    with session_() as session:
+        query = (
+            select(Products.name_product, Products.description, Procurement.date_procur)
+            .select_from(Products)
+            .join(Procurement)
+        )
 
-
+        result = session.execute(query)
+        print(result.all())
