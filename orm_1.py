@@ -466,4 +466,11 @@ def select_with_join():
         )
 
         result = session.execute(query)
-        print(result.all())
+        print("Название", " "*42, "Описание", " "*42, "Дата поставки")
+
+        for res in result:
+            name = "{:<50}||".format(res.name_product)
+            date_ = res.date_procur
+            desc = "{:<50}||".format(res.description)
+
+            print(name, desc, date_)
