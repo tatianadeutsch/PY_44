@@ -11,86 +11,79 @@ from sqlalchemy import Column, Integer, String, DateTime, Text
 
 intpk = Annotated[int, mapped_column(primary_key=True)]
 
-class Client(Base):
-    __tablename__ = 'Клиенты'
+class Clients(Base):
+    __tablename__ = 'clients'
 
-    Код: Mapped[intpk]
-    ФИО: Mapped[str] = mapped_column(String(180), nullable=False, unique=False)
-    Адрес: Mapped[str] = mapped_column(String(220), nullable=True)
-    Телефон: Mapped[str] = mapped_column(String(20), nullable=False)
-
-    Заказы = relationship('Orders', backref='Клиент1')
+    id_client: Mapped[intpk]
+    name_client: Mapped[str] = mapped_column(String(180), nullable=False, unique=False)
+    address_client: Mapped[str] = mapped_column(String(220), nullable=True)
+    tel_client: Mapped[str] = mapped_column(String(20), nullable=False)
 
 
 class Employees(Base):
-    __tablename__ = 'Сотрудники'
+    __tablename__ = 'employees'
 
-    КодСотрудника: Mapped[intpk]
-    Фамилия: Mapped[str] = mapped_column(String(50), nullable=False)
-    Имя: Mapped[str] = mapped_column(String(50), nullable=False)
-    Отчество: Mapped[str] = mapped_column(String(70), nullable=True)
-    Должность: Mapped[str] = mapped_column(String(120), nullable=False)
-    Адрес: Mapped[str] = mapped_column(String(120), nullable=True)
-    ДомашнийТелефон: Mapped[str] = mapped_column(String(20), nullable=False)
-    ДатаРождения: Mapped[datetime.date]
-
-    Заказы = relationship('Orders', backref='Сотрудник1')
+    id_employee: Mapped[intpk]
+    surname_employee: Mapped[str] = mapped_column(String(50), nullable=False)
+    last_employee: Mapped[str] = mapped_column(String(50), nullable=False)
+    patr_employee: Mapped[str] = mapped_column(String(70), nullable=True)
+    post_employee: Mapped[str] = mapped_column(String(120), nullable=False)
+    address_employee: Mapped[str] = mapped_column(String(120), nullable=True)
+    privat_tel: Mapped[str] = mapped_column(String(20), nullable=False)
+    birthdate: Mapped[datetime.date]
 
 
 class Products(Base):
-    __tablename__ = 'Товары'
+    __tablename__ = 'products'
 
-    КодТовара = Column(Integer(), primary_key=True)
-    КодПоставки = Column(Integer(), ForeignKey('Поставка.КодПоставки'))
-    НаименованиеТовара = Column(String(100), nullable=False)
-    ТехническиеХарактеристики = Column(Text)
-    Описание = Column(Text, nullable=False)
-    Изображение = Column(Text)
-    СтоимостьЗакупки = Column(Numeric, nullable=False)
-    Наличие = Column(String(20))
-    Количество = Column(Integer, nullable=False)
-    СтоимостьПродажи = Column(Numeric, nullable=False)
+    id_product = Column(Integer(), primary_key=True)
+    id_procur = Column(Integer(), ForeignKey('procurement.id_procurement'))
+    name_product = Column(String(100), nullable=False)
+    specifications = Column(Text)
+    description = Column(Text, nullable=False)
+    picture = Column(Text)
+    price_purchase = Column(Numeric, nullable=False)
+    availability = Column(String(20))
+    quantity = Column(Integer, nullable=False)
+    price_sale = Column(Numeric, nullable=False)
 
-    Заказы = relationship('Orders', backref='Товар1')
-    Поставка_ = relationship('Procurement')
+    procurements_ = relationship('Procurement')
 
 
 class Orders(Base):
-    __tablename__ = 'Заказы'
+    __tablename__ = 'orders'
 
-    КодЗаказа: Mapped[intpk]
-    КодСотрудника: Mapped[int] = mapped_column(ForeignKey('Сотрудники.КодСотрудника'))
-    КодТовара: Mapped[int] =  mapped_column(ForeignKey('Товары.КодТовара'))
-    ДатаРазмещения: Mapped[datetime.date]
-    ДатаИсполнения: Mapped[datetime.date]
-    КодКлиента: Mapped[int] =  mapped_column(ForeignKey('Клиенты.Код'))
+    id_order: Mapped[intpk]
+    id_empl: Mapped[int] = mapped_column(ForeignKey('employees.id_employee'))
+    id_prod: Mapped[int] =  mapped_column(ForeignKey('products.id_product'))
+    date_placement: Mapped[datetime.date]
+    date_ex: Mapped[datetime.date]
+    id_cl: Mapped[int] =  mapped_column(ForeignKey('clients.id_client'))
 
-    Товары_=relationship('Products')
-    Сотрудник_=relationship('Employees')
-    Клиент_=relationship('Client')
+    products_=relationship('Products')
+    employee_=relationship('Employees')
+    clients_=relationship('Clients')
 
 
 class Provider(Base):
-    __tablename__ = 'Поставщик'
+    __tablename__ = 'provider'
 
-    КодПоставщика: Mapped[intpk]
-    НазваниеПоставщика: Mapped[str] = mapped_column(String(180), nullable=False)
-    ПредставительПоставщика: Mapped[str] = mapped_column(String(200), nullable=False)
-    Обращаться: Mapped[str]
-    КонтактныйТелефон: Mapped[str] = mapped_column(String(20), nullable=False)
-    Адрес: Mapped[str] = mapped_column(String(200))
+    id_provider: Mapped[intpk]
+    name_provider: Mapped[str] = mapped_column(String(180), nullable=False)
+    agent_provider: Mapped[str] = mapped_column(String(200), nullable=False)
+    contact_person: Mapped[str]
+    tel_prov: Mapped[str] = mapped_column(String(20), nullable=False)
+    address_prov: Mapped[str] = mapped_column(String(200))
 
-    Поставка = relationship('Procurement', backref='Поставщик1')
 
 class Procurement(Base):
-    __tablename__ = 'Поставка'
+    __tablename__ = 'procurement'
 
-    КодПоставки: Mapped[intpk]
-    КодПоставщика: Mapped[int] = mapped_column(ForeignKey('Поставщик.КодПоставщика'))
-    ДатаПоставки: Mapped[datetime.date]
+    id_procurement: Mapped[intpk]
+    id_prov: Mapped[int] = mapped_column(ForeignKey('provider.id_provider'))
+    date_procur: Mapped[datetime.date]
 
-    Товары = relationship('Products', backref='Поставка1')
-    Поставщик_ = relationship('Provider')
+    provider_ = relationship('Provider')
 
 
 
