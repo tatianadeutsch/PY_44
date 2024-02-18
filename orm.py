@@ -591,3 +591,10 @@ def select_with_distinct():
 
     result = session.execute(query)
     print(result.all())
+
+
+def delete_for_provider():
+    with session_() as session:
+        query = session.query(Provider).filter(Provider.address_prov == 'Москва').delete()
+
+        session.commit()
