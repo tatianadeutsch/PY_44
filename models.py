@@ -37,7 +37,7 @@ class Products(Base):
     __tablename__ = "products"
 
     id_product = Column(Integer(), primary_key=True)
-    id_procur = Column(Integer(), ForeignKey("procurement.id_procurement"))
+    id_procur = Column(Integer(), ForeignKey("procurement.id_procurement", ondelete="set null"))
     name_product = Column(String(100), nullable=False)
     specifications = Column(Text)
     description = Column(Text, nullable=False)
@@ -54,11 +54,11 @@ class Orders(Base):
     __tablename__ = "orders"
 
     id_order: Mapped[intpk]
-    id_empl: Mapped[int] = mapped_column(ForeignKey("employees.id_employee"))
-    id_prod: Mapped[int] = mapped_column(ForeignKey("products.id_product"))
+    id_empl: Mapped[int] = mapped_column(ForeignKey("employees.id_employee", ondelete='set null'))
+    id_prod: Mapped[int] = mapped_column(ForeignKey("products.id_product", ondelete='set null'))
     date_placement: Mapped[datetime.date]
     date_ex: Mapped[datetime.date]
-    id_cl: Mapped[int] = mapped_column(ForeignKey("clients.id_client"))
+    id_cl: Mapped[int] = mapped_column(ForeignKey("clients.id_client", ondelete='set null'))
 
     products_ = relationship("Products")
     employee_ = relationship("Employees")
@@ -80,7 +80,7 @@ class Procurement(Base):
     __tablename__ = "procurement"
 
     id_procurement: Mapped[intpk]
-    id_prov: Mapped[int] = mapped_column(ForeignKey("provider.id_provider"))
+    id_prov: Mapped[int] = mapped_column(ForeignKey("provider.id_provider", ondelete='cascade'))
     date_procur: Mapped[datetime.date]
 
     provider_ = relationship("Provider")
