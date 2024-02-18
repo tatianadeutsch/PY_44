@@ -1,4 +1,4 @@
-from sqlalchemy import select, cast, Integer, func, and_
+from sqlalchemy import select, cast, Integer, func, and_, desc, asc, distinct
 from sqlalchemy.orm import aliased
 
 from database import Base, session_, engine
@@ -388,6 +388,7 @@ def select_table():
         query = select(Provider)  # SELECT * FROM Provider
         result = session.execute(query)
         providers = result.all()
+
         print(f"{providers=}")
 
 
@@ -422,6 +423,7 @@ def update_table_1():
 
 
 def select_from_products(like_productname: str = "бел"):
+    '''Средняя стоимость закупки товара'''
     with session_() as session:
         query = (
             select(
@@ -446,6 +448,10 @@ def select_from_products(like_productname: str = "бел"):
 
 def select_from_products_1():
     with session_() as session:
+        # query_1 = session.query(Products).filter(Products.price_sale == 700).order_by(Products.price_sale)
+        # # res_1 = session.execute(query_1)
+        # result_1 = res_1.all()
+        # print(query_1.all())
         query = (
             select(Products.name_product, Products.price_purchase, Products.price_sale)
             .select_from(Products)
@@ -466,7 +472,7 @@ def select_with_join():
         )
 
         result = session.execute(query)
-        print("Название", " "*42, "Описание", " "*42, "Дата поставки")
+        print("Название", " " * 42, "Описание", " " * 42, "Дата поставки")
 
         for res in result:
             name = "{:<50}||".format(res.name_product)
@@ -474,3 +480,114 @@ def select_with_join():
             desc = "{:<50}||".format(res.description)
 
             print(name, desc, date_)
+
+
+def select_with_allias():
+    with session_() as session:
+        pr = aliased(Products)
+        pc = aliased(Procurement)
+        prov = aliased(Provider)
+        query = (
+            select(
+                pr.name_product,
+                pc.id_procurement,
+                prov.name_provider,
+            )
+            .select_from(Products)
+            # full=True isouter=True
+            .join(pc)
+            .join(prov)
+            .order_by(desc(prov.name_provider))
+        )
+
+        results = session.execute(query)
+        print(results.scalar())
+        # print(results.all())
+
+
+def diff_date():
+    with session_() as session:
+        query = (
+            select(
+                Products.name_product,
+                Orders.date_placement,
+                Orders.date_ex,
+                (Orders.date_ex - Orders.date_placement).label("diff_date"),
+            )
+            .select_from(Orders)
+            .join(Products)
+            .order_by(Products.name_product)
+        )
+
+        result = session.execute(query)
+        # print(result.all())
+        print(
+            "Название",
+            " " * 42,
+            "Дата разм.",
+            " " * 3,
+            "Дата исп.",
+            " " * 3,
+            "Макс. кол-во дней на исполнение",
+        )
+
+        for res in result:
+            name = "{:<50}||".format(res.name_product)
+            date_placement = res.date_placement
+            date_ex = res.date_ex
+            dif_date = res.diff_date
+
+            print(name, date_placement, "||", date_ex, "||", dif_date)
+
+
+def select_with_agr():
+    with session_() as session:
+        query = (
+            select(
+                Products.name_product,
+                Products.price_purchase,
+                Products.price_sale,
+                func.sum(Products.price_sale - Products.price_purchase).label(
+                    "price_profit"
+                ),
+            )
+            .select_from(Products)
+            .where(Products.price_purchase > 50)
+            .group_by(
+                Products.name_product, Products.price_purchase, Products.price_sale
+            )
+            .order_by(asc(Products.price_sale))
+        )
+
+        result = session.execute(query)
+        print(
+            "Название товара",
+            " " * 34,
+            "Стоимость закупки",
+            "Стоимость продажи",
+            "Прибыль",
+        )
+
+        for res in result:
+            name = "{:<50}||".format(res.name_product)
+            price_pursh = "{:<15}||".format(res.price_purchase)
+            price_sal = "{:<15}||".format(res.price_sale)
+            prise_prof = res.price_profit
+
+            print(name, price_pursh, price_sal, prise_prof)
+
+
+def select_with_distinct():
+    with session_() as session:
+        query = (
+            select(
+                distinct(Employees.surname_employee), Orders.id_order, Orders.id_empl
+            )
+            .select_from(Employees)
+            .join(Orders)
+            .filter(Orders.id_prod != 6)
+            .limit(2)
+        )
+
+    result = session.execute(query)
+    print(result.all())
