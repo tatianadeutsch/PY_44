@@ -11,6 +11,9 @@ from orm_2 import (
     diff_date,
     select_with_agr,
     select_with_distinct,
+    delete_for_provider,
+    select_with_relationship,
+    select_with_joinedload,
 )
 
 # create_table()
@@ -24,4 +27,7 @@ from orm_2 import (
 # select_with_allias()
 # diff_date()
 # select_with_agr()
-select_with_distinct()
+# select_with_distinct()
+# delete_for_provider()
+# select_with_relationship()
+select_with_joinedload()
