@@ -1,8 +1,8 @@
-from sqlalchemy import select, cast, Integer, func, and_, desc, asc, distinct
-from sqlalchemy.orm import aliased
+from sqlalchemy import select, cast, Integer, func, and_, desc, asc, distinct, delete
+from sqlalchemy.orm import aliased, selectinload, joinedload
 
 from database import Base, session_, engine
-from models import Clients, Employees, Products, Orders, Provider, Procurement
+from models import Clients, Employees, Products, Orders, Provider, Procurement, Many_to_Many
 
 
 def create_table():
@@ -423,7 +423,7 @@ def update_table_1():
 
 
 def select_from_products(like_productname: str = "бел"):
-    '''Средняя стоимость закупки товара'''
+    """Средняя стоимость закупки товара"""
     with session_() as session:
         query = (
             select(
@@ -472,6 +472,8 @@ def select_with_join():
         )
 
         result = session.execute(query)
+        # заголовки столбцов
+        # titles = Products.__table__.columns.keys()
         print("Название", " " * 42, "Описание", " " * 42, "Дата поставки")
 
         for res in result:
@@ -498,11 +500,12 @@ def select_with_allias():
             .join(pc)
             .join(prov)
             .order_by(desc(prov.name_provider))
+            .limit(5)
         )
 
         results = session.execute(query)
-        print(results.scalar())
-        # print(results.all())
+        # print(results.scalar())
+        print(results.all())
 
 
 def diff_date():
@@ -589,12 +592,77 @@ def select_with_distinct():
             .limit(2)
         )
 
-    result = session.execute(query)
-    print(result.all())
+        result = session.execute(query)
+        print(result.all())
 
 
 def delete_for_provider():
     with session_() as session:
-        query = session.query(Provider).filter(Provider.address_prov == 'Москва').delete()
+        query = (
+            session.query(Provider).filter(Provider.address_prov == "Москва").delete()
+        )
 
         session.commit()
+
+
+def select_with_relationship():
+    with session_() as session:
+        query = select(Orders).options(selectinload(Orders.employee_))
+        # query = (select(Orders, Employees.id_employee).join(Employees, isouter=True))
+        engine.echo = False
+
+        result = session.execute(query)
+        # res = result.all()
+        # print(result.all())
+        res = result.scalars()
+
+        # заголовки
+        columns = Orders.__table__.columns.keys()
+        columns[0], columns[1], columns[2], columns[3], columns[4], columns[5] = (
+            "Код заказчика",
+            "Код сотрудника",
+            "Код поставки",
+            "Дата размещения",
+            "Дата отправки",
+            "Код клиента",
+        )
+
+        print(f" {' -- '.join(columns)} -- Отв. сотрудник")
+
+        for r in res:
+            id_order = "{:<15}||".format(r.id_order)
+            id_empl = "{:<15}||".format(r.id_empl)
+            id_prod = "{:<15}||".format(r.id_prod)
+            id_cl = "{:<10}".format(r.id_cl)
+
+            print(
+                id_order,
+                id_empl,
+                id_prod,
+                r.date_placement,
+                " " * 4,
+                "||",
+                r.date_ex,
+                " " * 2,
+                "||",
+                id_cl,
+                r.employee_.surname_employee,
+            )
+
+
+def select_with_joinedload():
+    with session_() as session:
+        query = (
+            select(Orders).options(joinedload(Orders.employee_))
+            # .selectinload(Employees.surname_employee))
+            .order_by(Orders.id_order)
+        )
+
+        result = session.execute(query)
+        res = result.scalars()
+
+        for r in res:
+            print(r.id_order, r.employee_.surname_employee)
+
+
+
